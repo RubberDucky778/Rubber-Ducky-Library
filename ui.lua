@@ -72,7 +72,7 @@ function Library.CreateLib(title, theme)
     Notification.Position = UDim2.new(1, -250, 1, -50)
     Notification.Size = UDim2.new(0, 240, 0, 40)
     Notification.Font = Enum.Font.SourceSans
-    Notification.Text = "Press Left Control to restore UI"
+    Notification.Text = "Press Right Control to restore UI"
     Notification.TextColor3 = Color3.fromRGB(255, 255, 255)
     Notification.TextSize = 18
     Notification.Visible = false
@@ -131,6 +131,9 @@ function Library.CreateLib(title, theme)
     MinimizeButton.MouseButton1Click:Connect(function()
         MainFrame.Visible = false
         Notification.Visible = true
+        delay(5, function()
+            Notification.Visible = false
+        end)
     end)
 
     CloseButton.MouseButton1Click:Connect(function()
@@ -138,7 +141,7 @@ function Library.CreateLib(title, theme)
     end)
 
     game:GetService("UserInputService").InputBegan:Connect(function(input, gameProcessed)
-        if input.KeyCode == Enum.KeyCode.LeftControl and not gameProcessed then
+        if input.KeyCode == Enum.KeyCode.RightControl and not gameProcessed then
             MainFrame.Visible = true
             Notification.Visible = false
         end
