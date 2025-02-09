@@ -17,8 +17,8 @@ function Library.CreateLib(title, theme)
     MainFrame.Name = "MainFrame"
     MainFrame.Parent = ScreenGui
     MainFrame.BackgroundColor3 = Color3.fromRGB(35, 35, 35)
-    MainFrame.Position = UDim2.new(0.5, -200, 0.5, -150)
-    MainFrame.Size = UDim2.new(0, 400, 0, 300)
+    MainFrame.Position = UDim2.new(0.5, -250, 0.5, -200)
+    MainFrame.Size = UDim2.new(0, 500, 0, 400)
     MainFrame.AnchorPoint = Vector2.new(0.5, 0.5)
     MainFrame.Active = true
     MainFrame.Draggable = true
@@ -137,6 +137,67 @@ function Library.CreateLib(title, theme)
             Button.TextSize = 18
 
             Button.MouseButton1Click:Connect(buttonData.Callback)
+        end
+
+        function Tab:CreateSlider(sliderData)
+            local SliderFrame = Instance.new("Frame")
+            local SliderLabel = Instance.new("TextLabel")
+            local Slider = Instance.new("TextButton")
+            local SliderBar = Instance.new("Frame")
+
+            SliderFrame.Name = sliderData.Name .. "Frame"
+            SliderFrame.Parent = TabFrame
+            SliderFrame.BackgroundColor3 = Color3.fromRGB(55, 55, 55)
+            SliderFrame.Size = UDim2.new(0, 300, 0, 50)
+            SliderFrame.Position = UDim2.new(0, 10, 0, 10 + (#TabFrame:GetChildren() - 1) * 60)
+
+            SliderLabel.Name = sliderData.Name .. "Label"
+            SliderLabel.Parent = SliderFrame
+            SliderLabel.BackgroundColor3 = Color3.fromRGB(55, 55, 55)
+            SliderLabel.Size = UDim2.new(0, 100, 0, 50)
+            SliderLabel.Font = Enum.Font.SourceSans
+            SliderLabel.Text = sliderData.Name
+            SliderLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
+            SliderLabel.TextSize = 18
+
+            SliderBar.Name = sliderData.Name .. "Bar"
+            SliderBar.Parent = SliderFrame
+            SliderBar.BackgroundColor3 = Color3.fromRGB(75, 75, 75)
+            SliderBar.Position = UDim2.new(0, 110, 0.5, -5)
+            SliderBar.Size = UDim2.new(1, -120, 0, 10)
+
+            Slider.Name = sliderData.Name
+            Slider.Parent = SliderBar
+            Slider.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+            Slider.Size = UDim2.new(0, 20, 1, 0)
+            Slider.Position = UDim2.new((sliderData.Default - sliderData.Min) / (sliderData.Max - sliderData.Min), -10, 0, 0)
+            Slider.Text = ""
+
+            local dragging = false
+            local function updateSlider(input)
+                local pos = UDim2.new(math.clamp((input.Position.X - SliderBar.AbsolutePosition.X) / SliderBar.AbsoluteSize.X, 0, 1), -10, 0, 0)
+                Slider.Position = pos
+                local value = math.floor(sliderData.Min + (pos.X.Scale * (sliderData.Max - sliderData.Min)))
+                sliderData.Callback(value)
+            end
+
+            Slider.InputBegan:Connect(function(input)
+                if input.UserInputType == Enum.UserInputType.MouseButton1 then
+                    dragging = true
+                end
+            end)
+
+            Slider.InputEnded:Connect(function(input)
+                if input.UserInputType == Enum.UserInputType.MouseButton1 then
+                    dragging = false
+                end
+            end)
+
+            game:GetService("UserInputService").InputChanged:Connect(function(input)
+                if dragging and input.UserInputType == Enum.UserInputType.MouseMovement then
+                    updateSlider(input)
+                end
+            end)
         end
 
         return Tab
