@@ -355,4 +355,77 @@ function Library.CreateLib(title, theme)
             local toggled = false
             Toggle.MouseButton1Click:Connect(function()
                 toggled = not toggled
-                Toggle.BackgroundColor3 = toggled and Color3.fromRGB(0, 255, 0) or Color3.fromRGB(255, 0,
+                Toggle.BackgroundColor3 = toggled and Color3.fromRGB(0, 255, 0) or Color3.fromRGB(255, 0, 0)
+                Toggle.Text = toggled and "On" or "Off"
+                toggleData.Callback(toggled)
+            end)
+        end
+
+        function Tab:CreateTextBox(textBoxData)
+            local TextBoxFrame = Instance.new("Frame")
+            local TextBoxLabel = Instance.new("TextLabel")
+            local TextBox = Instance.new("TextBox")
+
+            TextBoxFrame.Name = textBoxData.Name .. "Frame"
+            TextBoxFrame.Parent = ScrollingFrame
+            TextBoxFrame.BackgroundColor3 = Color3.fromRGB(55, 55, 55)
+            TextBoxFrame.Size = UDim2.new(1, -20, 0, 50)
+            TextBoxFrame.Position = UDim2.new(0, 10, 0, 10 + (#ScrollingFrame:GetChildren() - 1) * 60)
+            AddCorners(TextBoxFrame, 6)
+
+            TextBoxLabel.Name = textBoxData.Name .. "Label"
+            TextBoxLabel.Parent = TextBoxFrame
+            TextBoxLabel.BackgroundColor3 = Color3.fromRGB(55, 55, 55)
+            TextBoxLabel.Size = UDim2.new(0.3, 0, 1, 0)
+            TextBoxLabel.Font = Enum.Font.Gotham
+            TextBoxLabel.Text = "  " .. textBoxData.Name
+            TextBoxLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
+            TextBoxLabel.TextSize = 14
+            TextBoxLabel.TextXAlignment = Enum.TextXAlignment.Left
+            AddCorners(TextBoxLabel, 6)
+
+            TextBox.Name = textBoxData.Name
+            TextBox.Parent = TextBoxFrame
+            TextBox.BackgroundColor3 = Color3.fromRGB(75, 75, 75)
+            TextBox.Position = UDim2.new(0.3, 10, 0, 10)
+            TextBox.Size = UDim2.new(0.65, -20, 0.8, -20)
+            TextBox.Font = Enum.Font.Gotham
+            TextBox.Text = textBoxData.Default or ""
+            TextBox.TextColor3 = Color3.fromRGB(255, 255, 255)
+            TextBox.TextSize = 14
+            AddCorners(TextBox, 6)
+            TextBox.FocusLost:Connect(function(enterPressed)
+                if enterPressed then
+                    textBoxData.Callback(TextBox.Text)
+                end
+            end)
+        end
+
+        return Tab
+    end
+
+    MinimizeButton.MouseButton1Click:Connect(function()
+        MainFrame.Visible = false
+        Notification.Visible = true
+        delay(5, function()
+            if Notification then
+                Notification.Visible = false
+            end
+        end)
+    end)
+
+    CloseButton.MouseButton1Click:Connect(function()
+        ScreenGui:Destroy()
+    end)
+
+    game:GetService("UserInputService").InputBegan:Connect(function(input, gameProcessed)
+        if input.KeyCode == Enum.KeyCode.RightControl and not gameProcessed then
+            MainFrame.Visible = true
+            Notification.Visible = false
+        end
+    end)
+
+    return Window
+end
+
+return Library
