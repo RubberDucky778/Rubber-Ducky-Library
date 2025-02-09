@@ -250,6 +250,42 @@ function Library.CreateLib(title, theme)
             end)
         end
 
+        function Tab:CreateTextBox(textBoxData)
+            local TextBoxFrame = Instance.new("Frame")
+            local TextBoxLabel = Instance.new("TextLabel")
+            local TextBox = Instance.new("TextBox")
+
+            TextBoxFrame.Name = textBoxData.Name .. "Frame"
+            TextBoxFrame.Parent = TabFrame
+            TextBoxFrame.BackgroundColor3 = Color3.fromRGB(55, 55, 55)
+            TextBoxFrame.Size = UDim2.new(0, 300, 0, 50)
+            TextBoxFrame.Position = UDim2.new(0, 10, 0, 10 + (#TabFrame:GetChildren() - 1) * 60)
+
+            TextBoxLabel.Name = textBoxData.Name .. "Label"
+            TextBoxLabel.Parent = TextBoxFrame
+            TextBoxLabel.BackgroundColor3 = Color3.fromRGB(55, 55, 55)
+            TextBoxLabel.Size = UDim2.new(0.3, 0, 1, 0)
+            TextBoxLabel.Font = Enum.Font.SourceSans
+            TextBoxLabel.Text = textBoxData.Name
+            TextBoxLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
+            TextBoxLabel.TextSize = 18
+
+            TextBox.Name = textBoxData.Name
+            TextBox.Parent = TextBoxFrame
+            TextBox.BackgroundColor3 = Color3.fromRGB(75, 75, 75)
+            TextBox.Position = UDim2.new(0.3, 10, 0, 10)
+            TextBox.Size = UDim2.new(0.65, -20, 0.8, -20)
+            TextBox.Font = Enum.Font.SourceSans
+            TextBox.Text = textBoxData.Default or ""
+            TextBox.TextColor3 = Color3.fromRGB(255, 255, 255)
+            TextBox.TextSize = 18
+            TextBox.FocusLost:Connect(function(enterPressed)
+                if enterPressed then
+                    textBoxData.Callback(TextBox.Text)
+                end
+            end)
+        end
+
         return Tab
     end
 
