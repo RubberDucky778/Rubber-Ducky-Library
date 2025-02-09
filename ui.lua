@@ -49,7 +49,7 @@ function Library.CreateLib(title, theme)
     MinimizeButton.Parent = MainFrame
     MinimizeButton.BackgroundColor3 = Color3.fromRGB(255, 255, 0)
     MinimizeButton.Position = UDim2.new(1, -60, 0, 10)
-    MinimizeButton.Size = UDim2.new(0, 20, 0, 20)
+    MinimizeButton.Size = UDim2.new(0, 30, 0, 30)
     MinimizeButton.Font = Enum.Font.SourceSans
     MinimizeButton.Text = "-"
     MinimizeButton.TextColor3 = Color3.fromRGB(0, 0, 0)
@@ -59,7 +59,7 @@ function Library.CreateLib(title, theme)
     CloseButton.Parent = MainFrame
     CloseButton.BackgroundColor3 = Color3.fromRGB(255, 0, 0)
     CloseButton.Position = UDim2.new(1, -30, 0, 10)
-    CloseButton.Size = UDim2.new(0, 20, 0, 20)
+    CloseButton.Size = UDim2.new(0, 30, 0, 30)
     CloseButton.Font = Enum.Font.SourceSans
     CloseButton.Text = "X"
     CloseButton.TextColor3 = Color3.fromRGB(0, 0, 0)
@@ -137,8 +137,8 @@ function Library.CreateLib(title, theme)
         ScreenGui:Destroy()
     end)
 
-    game:GetService("UserInputService").InputBegan:Connect(function(input)
-        if input.KeyCode == Enum.KeyCode.LeftControl then
+    game:GetService("UserInputService").InputBegan:Connect(function(input, gameProcessed)
+        if input.KeyCode == Enum.KeyCode.LeftControl and not gameProcessed then
             MainFrame.Visible = true
             Notification.Visible = false
         end
