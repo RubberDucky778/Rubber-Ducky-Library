@@ -8,6 +8,7 @@ function Library.CreateLib(title, theme)
     local TabButtons = Instance.new("Frame")
     local MinimizeButton = Instance.new("TextButton")
     local CloseButton = Instance.new("TextButton")
+    local Notification = Instance.new("TextLabel")
     
     ScreenGui.Name = "LibraryUI"
     ScreenGui.ResetOnSpawn = false
@@ -64,6 +65,18 @@ function Library.CreateLib(title, theme)
     CloseButton.TextColor3 = Color3.fromRGB(0, 0, 0)
     CloseButton.TextSize = 24
 
+    Notification.Name = "Notification"
+    Notification.Parent = ScreenGui
+    Notification.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
+    Notification.BackgroundTransparency = 0.5
+    Notification.Position = UDim2.new(1, -250, 1, -50)
+    Notification.Size = UDim2.new(0, 240, 0, 40)
+    Notification.Font = Enum.Font.SourceSans
+    Notification.Text = "Press Left Control to restore UI"
+    Notification.TextColor3 = Color3.fromRGB(255, 255, 255)
+    Notification.TextSize = 18
+    Notification.Visible = false
+
     if theme == "DarkTheme" then
         MainFrame.BackgroundColor3 = Color3.fromRGB(45, 45, 45)
         TitleLabel.BackgroundColor3 = Color3.fromRGB(35, 35, 35)
@@ -116,11 +129,19 @@ function Library.CreateLib(title, theme)
     end
 
     MinimizeButton.MouseButton1Click:Connect(function()
-        MainFrame.Visible = not MainFrame.Visible
+        MainFrame.Visible = false
+        Notification.Visible = true
     end)
 
     CloseButton.MouseButton1Click:Connect(function()
         ScreenGui:Destroy()
+    end)
+
+    game:GetService("UserInputService").InputBegan:Connect(function(input)
+        if input.KeyCode == Enum.KeyCode.LeftControl then
+            MainFrame.Visible = true
+            Notification.Visible = false
+        end
     end)
 
     print("UI Library created with title:", title)
