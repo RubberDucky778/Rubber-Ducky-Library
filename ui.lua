@@ -88,6 +88,21 @@ function Library.CreateLib(title, theme)
         TitleLabel.TextColor3 = Color3.fromRGB(0, 0, 0)
         TabButtons.BackgroundColor3 = Color3.fromRGB(225, 225, 225)
         TabContainer.BackgroundColor3 = Color3.fromRGB(245, 245, 245)
+    elseif theme == "BlueTheme" then
+        MainFrame.BackgroundColor3 = Color3.fromRGB(70, 130, 180)
+        TitleLabel.BackgroundColor3 = Color3.fromRGB(60, 120, 170)
+        TabButtons.BackgroundColor3 = Color3.fromRGB(60, 120, 170)
+        TabContainer.BackgroundColor3 = Color3.fromRGB(70, 130, 180)
+    elseif theme == "GreenTheme" then
+        MainFrame.BackgroundColor3 = Color3.fromRGB(34, 139, 34)
+        TitleLabel.BackgroundColor3 = Color3.fromRGB(30, 130, 30)
+        TabButtons.BackgroundColor3 = Color3.fromRGB(30, 130, 30)
+        TabContainer.BackgroundColor3 = Color3.fromRGB(34, 139, 34)
+    elseif theme == "RedTheme" then
+        MainFrame.BackgroundColor3 = Color3.fromRGB(220, 20, 60)
+        TitleLabel.BackgroundColor3 = Color3.fromRGB(210, 10, 50)
+        TabButtons.BackgroundColor3 = Color3.fromRGB(210, 10, 50)
+        TabContainer.BackgroundColor3 = Color3.fromRGB(220, 20, 60)
     end
 
     local Window = {}
