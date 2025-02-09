@@ -138,6 +138,34 @@ function Library.CreateLib(title, theme)
     AddCorners(Notification, 8)
     AddStroke(Notification)
 
+    if theme == "DarkTheme" then
+        MainFrame.BackgroundColor3 = Color3.fromRGB(45, 45, 45)
+        TitleLabel.BackgroundColor3 = Color3.fromRGB(35, 35, 35)
+        TabButtons.BackgroundColor3 = Color3.fromRGB(35, 35, 35)
+        TabContainer.BackgroundColor3 = Color3.fromRGB(45, 45, 45)
+    elseif theme == "LightTheme" then
+        MainFrame.BackgroundColor3 = Color3.fromRGB(245, 245, 245)
+        TitleLabel.BackgroundColor3 = Color3.fromRGB(225, 225, 225)
+        TitleLabel.TextColor3 = Color3.fromRGB(0, 0, 0)
+        TabButtons.BackgroundColor3 = Color3.fromRGB(225, 225, 225)
+        TabContainer.BackgroundColor3 = Color3.fromRGB(245, 245, 245)
+    elseif theme == "BlueTheme" then
+        MainFrame.BackgroundColor3 = Color3.fromRGB(70, 130, 180)
+        TitleLabel.BackgroundColor3 = Color3.fromRGB(60, 120, 170)
+        TabButtons.BackgroundColor3 = Color3.fromRGB(60, 120, 170)
+        TabContainer.BackgroundColor3 = Color3.fromRGB(70, 130, 180)
+    elseif theme == "GreenTheme" then
+        MainFrame.BackgroundColor3 = Color3.fromRGB(34, 139, 34)
+        TitleLabel.BackgroundColor3 = Color3.fromRGB(30, 130, 30)
+        TabButtons.BackgroundColor3 = Color3.fromRGB(30, 130, 30)
+        TabContainer.BackgroundColor3 = Color3.fromRGB(34, 139, 34)
+    elseif theme == "RedTheme" then
+        MainFrame.BackgroundColor3 = Color3.fromRGB(220, 20, 60)
+        TitleLabel.BackgroundColor3 = Color3.fromRGB(210, 10, 50)
+        TabButtons.BackgroundColor3 = Color3.fromRGB(210, 10, 50)
+        TabContainer.BackgroundColor3 = Color3.fromRGB(220, 20, 60)
+    end
+
     local Window = {}
     local tabs = {}
 
@@ -210,33 +238,131 @@ function Library.CreateLib(title, theme)
             return Button
         end
 
-        -- Similar enhancements for other component creation functions...
-        
-        return Tab
-    end
+        function Tab:CreateSlider(sliderData)
+            local SliderFrame = Instance.new("Frame")
+            local SliderLabel = Instance.new("TextLabel")
+            local Slider = Instance.new("TextButton")
+            local SliderBar = Instance.new("Frame")
 
-    -- Window controls
-    MinimizeButton.MouseButton1Click:Connect(function()
-        MainFrame.Visible = false
-        Notification.Visible = true
-        wait(3)
-        if Notification.Visible then
-            Notification.Visible = false
+            SliderFrame.Name = sliderData.Name .. "Frame"
+            SliderFrame.Parent = ScrollingFrame
+            SliderFrame.BackgroundColor3 = Color3.fromRGB(55, 55, 55)
+            SliderFrame.Size = UDim2.new(1, -20, 0, 50)
+            SliderFrame.Position = UDim2.new(0, 10, 0, 10 + (#ScrollingFrame:GetChildren() - 1) * 60)
+            AddCorners(SliderFrame, 6)
+
+            SliderLabel.Name = sliderData.Name .. "Label"
+            SliderLabel.Parent = SliderFrame
+            SliderLabel.BackgroundColor3 = Color3.fromRGB(55, 55, 55)
+            SliderLabel.Size = UDim2.new(0, 100, 1, 0)
+            SliderLabel.Font = Enum.Font.Gotham
+            SliderLabel.Text = "  " .. sliderData.Name
+            SliderLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
+            SliderLabel.TextSize = 14
+            AddCorners(SliderLabel, 6)
+
+            SliderBar.Name = sliderData.Name .. "Bar"
+            SliderBar.Parent = SliderFrame
+            SliderBar.BackgroundColor3 = Color3.fromRGB(75, 75, 75)
+            SliderBar.Position = UDim2.new(0, 110, 0.5, -5)
+            SliderBar.Size = UDim2.new(1, -120, 0, 10)
+            AddCorners(SliderBar, 6)
+
+            Slider.Name = sliderData.Name
+            Slider.Parent = SliderBar
+            Slider.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+            Slider.Size = UDim2.new(0, 20, 1, 0)
+            Slider.Position = UDim2.new((sliderData.Default - sliderData.Min) / (sliderData.Max - sliderData.Min), -10, 0, 0)
+            Slider.Text = ""
+            AddCorners(Slider, 6)
+
+            local dragging = false
+            local function updateSlider(input)
+                local pos = UDim2.new(math.clamp((input.Position.X - SliderBar.AbsolutePosition.X) / SliderBar.AbsoluteSize.X, 0, 1), -10, 0, 0)
+                Slider.Position = pos
+                local value = math.floor(sliderData.Min + (pos.X.Scale * (sliderData.Max - sliderData.Min)))
+                sliderData.Callback(value)
+            end
+
+            Slider.InputBegan:Connect(function(input)
+                if input.UserInputType == Enum.UserInputType.MouseButton1 then
+                    dragging = true
+                end
+            end)
+
+            Slider.InputEnded:Connect(function(input)
+                if input.UserInputType == Enum.UserInputType.MouseButton1 then
+                    dragging = false
+                end
+            end)
+
+            game:GetService("UserInputService").InputChanged:Connect(function(input)
+                if dragging and input.UserInputType == Enum.UserInputType.MouseMovement then
+                    updateSlider(input)
+                end
+            end)
         end
-    end)
 
-    CloseButton.MouseButton1Click:Connect(function()
-        ScreenGui:Destroy()
-    end)
+        function Tab:CreateLabel(labelData)
+            local Label = Instance.new("TextLabel")
 
-    game:GetService("UserInputService").InputBegan:Connect(function(input, gameProcessed)
-        if input.KeyCode == Enum.KeyCode.RightControl and not gameProcessed then
-            MainFrame.Visible = true
-            Notification.Visible = false
+            Label.Name = labelData.Name
+            Label.Parent = ScrollingFrame
+            Label.BackgroundColor3 = Color3.fromRGB(55, 55, 55)
+            Label.Size = UDim2.new(1, -20, 0, 35)
+            Label.Position = UDim2.new(0, 10, 0, 10 + (#ScrollingFrame:GetChildren() - 1) * 45)
+            Label.Font = Enum.Font.Gotham
+            Label.Text = "  " .. labelData.Text
+            Label.TextColor3 = Color3.fromRGB(255, 255, 255)
+            Label.TextSize = 14
+            Label.TextXAlignment = Enum.TextXAlignment.Left
+            AddCorners(Label, 6)
+            AddStroke(Label)
         end
-    end)
 
-    return Window
-end
+        function Tab:CreateToggle(toggleData)
+            local ToggleFrame = Instance.new("Frame")
+            local ToggleLabel = Instance.new("TextLabel")
+            local Toggle = Instance.new("TextButton")
 
-return Library
+            ToggleFrame.Name = toggleData.Name .. "Frame"
+            ToggleFrame.Parent = ScrollingFrame
+            ToggleFrame.BackgroundColor3 = Color3.fromRGB(55, 55, 55)
+            ToggleFrame.Size = UDim2.new(1, -20, 0, 50)
+            ToggleFrame.Position = UDim2.new(0, 10, 0, 10 + (#ScrollingFrame:GetChildren() - 1) * 60)
+            AddCorners(ToggleFrame, 6)
+
+            ToggleLabel.Name = toggleData.Name .. "Label"
+            ToggleLabel.Parent = ToggleFrame
+            ToggleLabel.BackgroundColor3 = Color3.fromRGB(55, 55, 55)
+            ToggleLabel.Size = UDim2.new(0.8, 0, 1, 0)
+            ToggleLabel.Font = Enum.Font.Gotham
+            ToggleLabel.Text = "  " .. toggleData.Name
+            ToggleLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
+            ToggleLabel.TextSize = 14
+            ToggleLabel.TextXAlignment = Enum.TextXAlignment.Left
+            AddCorners(ToggleLabel, 6)
+
+            Toggle.Name = toggleData.Name
+            Toggle.Parent = ToggleFrame
+            Toggle.BackgroundColor3 = Color3.fromRGB(255, 0, 0)
+            Toggle.Size = UDim2.new(0.2, 0, 1, 0)
+            Toggle.Position = UDim2.new(0.8, 0, 0, 0)
+            Toggle.Text = "Off"
+            AddCorners(Toggle, 6)
+
+            local toggled = false
+            Toggle.MouseButton1Click:Connect(function()
+                toggled = not toggled
+                Toggle.BackgroundColor3 = toggled and Color3.fromRGB(0, 255, 0) or Color3.fromRGB(255, 0, 0)
+                Toggle.Text = toggled and "On" or "Off"
+                toggleData.Callback(toggled)
+            end)
+        end
+
+        function Tab:CreateTextBox(textBoxData)
+            local TextBoxFrame = Instance.new("Frame")
+            local TextBoxLabel = Instance.new("TextLabel")
+            local TextBox = Instance.new("TextBox")
+
+            TextBoxFrame.Name = textBoxData.Name ..
