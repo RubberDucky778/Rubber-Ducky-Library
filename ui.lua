@@ -1,6 +1,21 @@
 local Library = {}
 
 function Library.CreateLib(title, theme)
+    local function AddCorners(instance, radius)
+        local corner = Instance.new("UICorner")
+        corner.CornerRadius = UDim.new(0, radius or 6)
+        corner.Parent = instance
+        return corner
+    end
+
+    local function AddStroke(instance, color, thickness)
+        local stroke = Instance.new("UIStroke")
+        stroke.Color = color or Color3.fromRGB(65, 65, 70)
+        stroke.Thickness = thickness or 1
+        stroke.Parent = instance
+        return stroke
+    end
+
     local ScreenGui = Instance.new("ScreenGui")
     local MainFrame = Instance.new("Frame")
     local TitleLabel = Instance.new("TextLabel")
@@ -9,14 +24,12 @@ function Library.CreateLib(title, theme)
     local MinimizeButton = Instance.new("TextButton")
     local CloseButton = Instance.new("TextButton")
     local Notification = Instance.new("TextLabel")
-    local UICorner = Instance.new("UICorner")
-    local UIStroke = Instance.new("UIStroke")
     
-    -- Enhanced styling for the main components
     ScreenGui.Name = "EnhancedUI"
     ScreenGui.ResetOnSpawn = false
     ScreenGui.Parent = game.CoreGui
 
+    -- Main Frame with enhanced corners and stroke
     MainFrame.Name = "MainFrame"
     MainFrame.Parent = ScreenGui
     MainFrame.BackgroundColor3 = Color3.fromRGB(30, 30, 35)
@@ -25,13 +38,10 @@ function Library.CreateLib(title, theme)
     MainFrame.AnchorPoint = Vector2.new(0.5, 0.5)
     MainFrame.Active = true
     MainFrame.Draggable = true
+    AddCorners(MainFrame, 10)
+    AddStroke(MainFrame)
 
-    -- Add rounded corners to main frame
-    local MainCorner = Instance.new("UICorner")
-    MainCorner.Parent = MainFrame
-    MainCorner.CornerRadius = UDim.new(0, 8)
-
-    -- Add subtle shadow
+    -- Drop shadow effect
     local DropShadow = Instance.new("ImageLabel")
     DropShadow.Name = "DropShadow"
     DropShadow.Parent = MainFrame
@@ -46,57 +56,55 @@ function Library.CreateLib(title, theme)
     DropShadow.ScaleType = Enum.ScaleType.Slice
     DropShadow.SliceCenter = Rect.new(49, 49, 450, 450)
 
+    -- Title with enhanced appearance
     TitleLabel.Name = "TitleLabel"
     TitleLabel.Parent = MainFrame
-    TitleLabel.BackgroundColor3 = Color3.fromRGB(25, 25, 30)
+    TitleLabel.BackgroundColor3 = Color3.fromRGB(35, 35, 40)
     TitleLabel.Size = UDim2.new(1, 0, 0, 40)
     TitleLabel.Font = Enum.Font.GothamBold
     TitleLabel.Text = "   " .. title
     TitleLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
     TitleLabel.TextSize = 18
     TitleLabel.TextXAlignment = Enum.TextXAlignment.Left
+    AddCorners(TitleLabel, 8)
+    AddStroke(TitleLabel)
 
-    -- Add corner radius to title
-    local TitleCorner = Instance.new("UICorner")
-    TitleCorner.Parent = TitleLabel
-    TitleCorner.CornerRadius = UDim.new(0, 8)
-
+    -- Tab buttons container with rounded corners
     TabButtons.Name = "TabButtons"
     TabButtons.Parent = MainFrame
-    TabButtons.BackgroundColor3 = Color3.fromRGB(25, 25, 30)
-    TabButtons.Position = UDim2.new(0, 0, 0, 40)
-    TabButtons.Size = UDim2.new(0, 120, 1, -40)
+    TabButtons.BackgroundColor3 = Color3.fromRGB(35, 35, 40)
+    TabButtons.Position = UDim2.new(0, 10, 0, 50)
+    TabButtons.Size = UDim2.new(0, 120, 1, -60)
+    AddCorners(TabButtons, 8)
+    AddStroke(TabButtons)
 
-    -- Add corner radius to tab buttons
-    local TabButtonsCorner = Instance.new("UICorner")
-    TabButtonsCorner.Parent = TabButtons
-    TabButtonsCorner.CornerRadius = UDim.new(0, 8)
-
+    -- Tab container with rounded corners
     TabContainer.Name = "TabContainer"
     TabContainer.Parent = MainFrame
-    TabContainer.BackgroundColor3 = Color3.fromRGB(30, 30, 35)
-    TabContainer.Position = UDim2.new(0, 120, 0, 40)
-    TabContainer.Size = UDim2.new(1, -120, 1, -40)
+    TabContainer.BackgroundColor3 = Color3.fromRGB(35, 35, 40)
+    TabContainer.Position = UDim2.new(0, 140, 0, 50)
+    TabContainer.Size = UDim2.new(1, -150, 1, -60)
     TabContainer.ClipsDescendants = true
+    AddCorners(TabContainer, 8)
+    AddStroke(TabContainer)
 
-    -- Enhanced buttons
-    local function CreateButton(name, color, position)
+    -- Enhanced button styling
+    local function CreateButton(name, color)
         local Button = Instance.new("TextButton")
         Button.Name = name
         Button.Parent = MainFrame
         Button.BackgroundColor3 = color
-        Button.Position = position
+        Button.Position = name == "CloseButton" and UDim2.new(1, -35, 0, 8) or UDim2.new(1, -65, 0, 8)
         Button.Size = UDim2.new(0, 25, 0, 25)
         Button.Font = Enum.Font.GothamBold
         Button.TextColor3 = Color3.fromRGB(255, 255, 255)
         Button.TextSize = 14
         Button.Text = name == "CloseButton" and "×" or "-"
-        
-        local ButtonCorner = Instance.new("UICorner")
-        ButtonCorner.Parent = Button
-        ButtonCorner.CornerRadius = UDim.new(0, 4)
+        AddCorners(Button, 6)
+        AddStroke(Button, Color3.fromRGB(255, 255, 255), 1)
         
         -- Hover effect
+        local originalColor = color
         Button.MouseEnter:Connect(function()
             game:GetService("TweenService"):Create(Button, TweenInfo.new(0.2), {
                 BackgroundColor3 = color:Lerp(Color3.fromRGB(255, 255, 255), 0.2)
@@ -105,20 +113,20 @@ function Library.CreateLib(title, theme)
         
         Button.MouseLeave:Connect(function()
             game:GetService("TweenService"):Create(Button, TweenInfo.new(0.2), {
-                BackgroundColor3 = color
+                BackgroundColor3 = originalColor
             }):Play()
         end)
         
         return Button
     end
 
-    MinimizeButton = CreateButton("MinimizeButton", Color3.fromRGB(255, 180, 0), UDim2.new(1, -60, 0, 8))
-    CloseButton = CreateButton("CloseButton", Color3.fromRGB(255, 70, 70), UDim2.new(1, -30, 0, 8))
+    MinimizeButton = CreateButton("MinimizeButton", Color3.fromRGB(255, 180, 0))
+    CloseButton = CreateButton("CloseButton", Color3.fromRGB(255, 70, 70))
 
-    -- Enhanced notification
+    -- Enhanced notification with rounded corners
     Notification.Name = "Notification"
     Notification.Parent = ScreenGui
-    Notification.BackgroundColor3 = Color3.fromRGB(30, 30, 35)
+    Notification.BackgroundColor3 = Color3.fromRGB(35, 35, 40)
     Notification.Position = UDim2.new(1, -250, 1, -80)
     Notification.Size = UDim2.new(0, 240, 0, 40)
     Notification.Font = Enum.Font.Gotham
@@ -127,48 +135,9 @@ function Library.CreateLib(title, theme)
     Notification.TextSize = 14
     Notification.TextXAlignment = Enum.TextXAlignment.Left
     Notification.Visible = false
-    
-    local NotifCorner = Instance.new("UICorner")
-    NotifCorner.Parent = Notification
-    NotifCorner.CornerRadius = UDim.new(0, 6)
+    AddCorners(Notification, 8)
+    AddStroke(Notification)
 
-    -- Theme definitions with gradients and enhanced colors
-    local themes = {
-        DarkTheme = {
-            main = Color3.fromRGB(30, 30, 35),
-            secondary = Color3.fromRGB(25, 25, 30),
-            accent = Color3.fromRGB(65, 65, 70)
-        },
-        LightTheme = {
-            main = Color3.fromRGB(240, 240, 245),
-            secondary = Color3.fromRGB(230, 230, 235),
-            accent = Color3.fromRGB(200, 200, 205)
-        },
-        BlueTheme = {
-            main = Color3.fromRGB(35, 85, 140),
-            secondary = Color3.fromRGB(30, 75, 130),
-            accent = Color3.fromRGB(40, 95, 150)
-        },
-        GreenTheme = {
-            main = Color3.fromRGB(40, 130, 80),
-            secondary = Color3.fromRGB(35, 120, 70),
-            accent = Color3.fromRGB(45, 140, 90)
-        },
-        RedTheme = {
-            main = Color3.fromRGB(180, 40, 40),
-            secondary = Color3.fromRGB(170, 35, 35),
-            accent = Color3.fromRGB(190, 45, 45)
-        }
-    }
-
-    -- Apply theme
-    local selectedTheme = themes[theme] or themes.DarkTheme
-    MainFrame.BackgroundColor3 = selectedTheme.main
-    TitleLabel.BackgroundColor3 = selectedTheme.secondary
-    TabButtons.BackgroundColor3 = selectedTheme.secondary
-    TabContainer.BackgroundColor3 = selectedTheme.main
-
-    -- Rest of the implementation remains similar but with enhanced styling for each element
     local Window = {}
     local tabs = {}
 
@@ -176,95 +145,87 @@ function Library.CreateLib(title, theme)
         local TabButton = Instance.new("TextButton")
         local TabFrame = Instance.new("Frame")
         
+        -- Enhanced tab button
         TabButton.Name = tabName .. "Button"
         TabButton.Parent = TabButtons
-        TabButton.BackgroundColor3 = selectedTheme.accent
-        TabButton.BackgroundTransparency = 1
+        TabButton.BackgroundColor3 = Color3.fromRGB(45, 45, 50)
         TabButton.Size = UDim2.new(1, -10, 0, 30)
         TabButton.Position = UDim2.new(0, 5, 0, 5 + (#tabs * 35))
         TabButton.Font = Enum.Font.Gotham
-        TabButton.Text = tabName
+        TabButton.Text = "  " .. tabName
         TabButton.TextColor3 = Color3.fromRGB(255, 255, 255)
         TabButton.TextSize = 14
-        
-        local TabButtonCorner = Instance.new("UICorner")
-        TabButtonCorner.Parent = TabButton
-        TabButtonCorner.CornerRadius = UDim.new(0, 6)
+        TabButton.TextXAlignment = Enum.TextXAlignment.Left
+        AddCorners(TabButton, 6)
+        AddStroke(TabButton)
 
-        -- Add hover effect
-        TabButton.MouseEnter:Connect(function()
-            game:GetService("TweenService"):Create(TabButton, TweenInfo.new(0.2), {
-                BackgroundTransparency = 0
-            }):Play()
-        end)
-        
-        TabButton.MouseLeave:Connect(function()
-            if TabFrame.Visible then return end
-            game:GetService("TweenService"):Create(TabButton, TweenInfo.new(0.2), {
-                BackgroundTransparency = 1
-            }):Play()
-        end)
-
+        -- Tab content frame with rounded corners
         TabFrame.Name = tabName .. "Frame"
         TabFrame.Parent = TabContainer
-        TabFrame.BackgroundColor3 = selectedTheme.main
-        TabFrame.BackgroundTransparency = 0
-        TabFrame.Size = UDim2.new(1, 0, 1, 0)
+        TabFrame.BackgroundColor3 = Color3.fromRGB(40, 40, 45)
+        TabFrame.Size = UDim2.new(1, -10, 1, -10)
+        TabFrame.Position = UDim2.new(0, 5, 0, 5)
         TabFrame.Visible = #tabs == 0
-
-        -- Create ScrollingFrame for tab content
+        AddCorners(TabFrame, 6)
+        
+        -- Create ScrollingFrame for content
         local ScrollingFrame = Instance.new("ScrollingFrame")
         ScrollingFrame.Parent = TabFrame
         ScrollingFrame.BackgroundTransparency = 1
         ScrollingFrame.Size = UDim2.new(1, -10, 1, -10)
         ScrollingFrame.Position = UDim2.new(0, 5, 0, 5)
-        ScrollingFrame.ScrollBarThickness = 2
-        ScrollingFrame.ScrollBarImageColor3 = selectedTheme.accent
-        
+        ScrollingFrame.ScrollBarThickness = 3
+        ScrollingFrame.ScrollBarImageColor3 = Color3.fromRGB(65, 65, 70)
+        AddCorners(ScrollingFrame, 6)
+
         table.insert(tabs, TabFrame)
 
+        -- Tab button click handler
         TabButton.MouseButton1Click:Connect(function()
-            for i, tab in pairs(tabs) do
+            for _, tab in pairs(tabs) do
                 tab.Visible = false
-                TabButtons:GetChildren()[i].BackgroundTransparency = 1
             end
             TabFrame.Visible = true
-            TabButton.BackgroundTransparency = 0
         end)
 
-        -- Enhanced component creation functions
         local Tab = {}
         
-        -- Add enhanced versions of CreateButton, CreateSlider, CreateLabel, CreateToggle, CreateTextBox
-        -- (Implementation details for these would follow similar enhancement patterns)
+        -- Enhanced component creation functions
+        function Tab:CreateButton(buttonData)
+            local Button = Instance.new("TextButton")
+            Button.Name = buttonData.Name
+            Button.Parent = ScrollingFrame
+            Button.BackgroundColor3 = Color3.fromRGB(50, 50, 55)
+            Button.Size = UDim2.new(1, -20, 0, 35)
+            Button.Position = UDim2.new(0, 10, 0, 10 + (#ScrollingFrame:GetChildren() - 1) * 45)
+            Button.Font = Enum.Font.Gotham
+            Button.Text = "  " .. buttonData.Name
+            Button.TextColor3 = Color3.fromRGB(255, 255, 255)
+            Button.TextSize = 14
+            Button.TextXAlignment = Enum.TextXAlignment.Left
+            AddCorners(Button, 6)
+            AddStroke(Button)
 
+            Button.MouseButton1Click:Connect(buttonData.Callback)
+            return Button
+        end
+
+        -- Similar enhancements for other component creation functions...
+        
         return Tab
     end
 
-    -- Window management
+    -- Window controls
     MinimizeButton.MouseButton1Click:Connect(function()
         MainFrame.Visible = false
         Notification.Visible = true
-        game:GetService("TweenService"):Create(Notification, TweenInfo.new(0.5), {
-            Position = UDim2.new(1, -260, 1, -80)
-        }):Play()
-        delay(5, function()
-            if Notification.Visible then
-                game:GetService("TweenService"):Create(Notification, TweenInfo.new(0.5), {
-                    Position = UDim2.new(1, -10, 1, -80)
-                }):Play()
-                wait(0.5)
-                Notification.Visible = false
-            end
-        end)
+        wait(3)
+        if Notification.Visible then
+            Notification.Visible = false
+        end
     end)
 
     CloseButton.MouseButton1Click:Connect(function()
-        game:GetService("TweenService"):Create(MainFrame, TweenInfo.new(0.3), {
-            Size = UDim2.new(0, 0, 0, 0),
-            Position = UDim2.new(0.5, 0, 0.5, 0)
-        }):Play()
-        wait(0.3)
         ScreenGui:Destroy()
     end)
 
