@@ -14,6 +14,8 @@ function Library.CreateLib(title, theme)
     MainFrame.Position = UDim2.new(0.5, -200, 0.5, -150)
     MainFrame.Size = UDim2.new(0, 400, 0, 300)
     MainFrame.AnchorPoint = Vector2.new(0.5, 0.5)
+    MainFrame.Active = true
+    MainFrame.Draggable = true
 
     TitleLabel.Name = "TitleLabel"
     TitleLabel.Parent = MainFrame
