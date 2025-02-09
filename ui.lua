@@ -1,127 +1,73 @@
+-- ui.lua
+
 local Library = {}
-local TweenService = game:GetService("TweenService")
-local UserInputService = game:GetService("UserInputService")
 
-function Library.CreateLib(title, theme)
-    -- Create ScreenGui
-    local ScreenGui = Instance.new("ScreenGui")
-    ScreenGui.Parent = game.Players.LocalPlayer:WaitForChild("PlayerGui")
+-- Create the main library function
+function Library.CreateLib(name, theme)
+    local ui = Instance.new("ScreenGui")
+    ui.Name = name
+    ui.Parent = game.Players.LocalPlayer:WaitForChild("PlayerGui")
 
-    -- Create Main Frame
+    -- Create a frame to hold the UI elements
     local MainFrame = Instance.new("Frame")
     MainFrame.Size = UDim2.new(0, 400, 0, 300)
     MainFrame.Position = UDim2.new(0.5, -200, 0.5, -150)
-    MainFrame.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
-    MainFrame.BorderSizePixel = 0
-    MainFrame.Parent = ScreenGui
+    MainFrame.BackgroundColor3 = theme == "DefaultTheme" and Color3.fromRGB(30, 30, 30) or Color3.fromRGB(255, 255, 255)
+    MainFrame.Parent = ui
 
-    -- UI Corner for rounded edges
-    local UICorner = Instance.new("UICorner")
-    UICorner.CornerRadius = UDim.new(0, 8)
-    UICorner.Parent = MainFrame
+    -- Create a title
+    local Title = Instance.new("TextLabel")
+    Title.Size = UDim2.new(0, 400, 0, 50)
+    Title.Text = name
+    Title.BackgroundTransparency = 1
+    Title.TextColor3 = Color3.fromRGB(255, 165, 0)  -- Orange color for title
+    Title.TextSize = 24
+    Title.Parent = MainFrame
 
-    -- Title Bar
-    local TitleBar = Instance.new("Frame")
-    TitleBar.Size = UDim2.new(1, 0, 0, 30)
-    TitleBar.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
-    TitleBar.Parent = MainFrame
-
-    local TitleLabel = Instance.new("TextLabel")
-    TitleLabel.Size = UDim2.new(1, 0, 1, 0)
-    TitleLabel.BackgroundTransparency = 1
-    TitleLabel.Text = title
-    TitleLabel.TextColor3 = Color3.fromRGB(255, 165, 0)
-    TitleLabel.Font = Enum.Font.GothamBold
-    TitleLabel.TextSize = 16
-    TitleLabel.Parent = TitleBar
-
-    -- Tab Holder
-    local TabHolder = Instance.new("Frame")
-    TabHolder.Size = UDim2.new(1, 0, 0, 30)
-    TabHolder.Position = UDim2.new(0, 0, 0, 30)
-    TabHolder.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
-    TabHolder.Parent = MainFrame
-
-    local TabsLayout = Instance.new("UIListLayout")
-    TabsLayout.FillDirection = Enum.FillDirection.Horizontal
-    TabsLayout.Parent = TabHolder
-
-    -- Buttons Holder
-    local ButtonsHolder = Instance.new("Frame")
-    ButtonsHolder.Size = UDim2.new(1, -20, 1, -70)
-    ButtonsHolder.Position = UDim2.new(0, 10, 0, 60)
-    ButtonsHolder.BackgroundTransparency = 1
-    ButtonsHolder.Parent = MainFrame
-
-    local ButtonsLayout = Instance.new("UIListLayout")
-    ButtonsLayout.Parent = ButtonsHolder
-
-    -- Draggable UI
-    local dragging, dragInput, dragStart, startPos
-    
-    local function update(input)
-        local delta = input.Position - dragStart
-        MainFrame.Position = UDim2.new(
-            startPos.X.Scale, startPos.X.Offset + delta.X,
-            startPos.Y.Scale, startPos.Y.Offset + delta.Y
-        )
+    -- Function to create buttons
+    function ui:CreateButton(buttonText, callback)
+        local Button = Instance.new("TextButton")
+        Button.Size = UDim2.new(0, 200, 0, 50)
+        Button.Position = UDim2.new(0, 100, 0, 80)
+        Button.Text = buttonText
+        Button.BackgroundColor3 = Color3.fromRGB(255, 165, 0) -- Orange button color
+        Button.TextColor3 = Color3.fromRGB(0, 0, 0)
+        Button.TextSize = 18
+        Button.Parent = MainFrame
+        
+        Button.MouseButton1Click:Connect(callback)
     end
-    
-    TitleBar.InputBegan:Connect(function(input)
-        if input.UserInputType == Enum.UserInputType.MouseButton1 then
-            dragging = true
-            dragStart = input.Position
-            startPos = MainFrame.Position
 
-            input.Changed:Connect(function()
-                if input.UserInputState == Enum.UserInputState.End then
-                    dragging = false
-                end
-            end)
-        end
-    end)
+    -- Function to create sliders
+    function ui:CreateSlider(sliderText, min, max, defaultValue, callback)
+        local SliderFrame = Instance.new("Frame")
+        SliderFrame.Size = UDim2.new(0, 350, 0, 50)
+        SliderFrame.Position = UDim2.new(0, 25, 0, 120)
+        SliderFrame.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
+        SliderFrame.Parent = MainFrame
 
-    TitleBar.InputChanged:Connect(function(input)
-        if input.UserInputType == Enum.UserInputType.MouseMovement then
-            dragInput = input
-        end
-    end)
+        local SliderLabel = Instance.new("TextLabel")
+        SliderLabel.Size = UDim2.new(0, 350, 0, 20)
+        SliderLabel.Text = sliderText
+        SliderLabel.BackgroundTransparency = 1
+        SliderLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
+        SliderLabel.TextSize = 14
+        SliderLabel.Parent = SliderFrame
 
-    UserInputService.InputChanged:Connect(function(input)
-        if input == dragInput and dragging then
-            update(input)
-        end
-    end)
+        local Slider = Instance.new("Slider")
+        Slider.Size = UDim2.new(0, 350, 0, 5)
+        Slider.Position = UDim2.new(0, 0, 0, 25)
+        Slider.MinValue = min
+        Slider.MaxValue = max
+        Slider.Value = defaultValue
+        Slider.Parent = SliderFrame
 
-    return {
-        MainFrame = MainFrame,
-        TabHolder = TabHolder,
-        ButtonsHolder = ButtonsHolder
-    }
-end
+        Slider.Changed:Connect(function(newValue)
+            callback(newValue)
+        end)
+    end
 
--- Button Function
-function Library:CreateButton(parent, text, callback)
-    local Button = Instance.new("TextButton")
-    Button.Size = UDim2.new(1, 0, 0, 40)
-    Button.BackgroundColor3 = Color3.fromRGB(255, 165, 0)
-    Button.Text = text
-    Button.Font = Enum.Font.GothamBold
-    Button.TextSize = 14
-    Button.Parent = parent.ButtonsHolder
-
-    Button.MouseButton1Click:Connect(callback)
-end
-
--- Tab Function
-function Library:CreateTab(parent, name)
-    local TabButton = Instance.new("TextButton")
-    TabButton.Size = UDim2.new(0, 80, 1, 0)
-    TabButton.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
-    TabButton.Text = name
-    TabButton.Font = Enum.Font.GothamBold
-    TabButton.TextSize = 14
-    TabButton.Parent = parent.TabHolder
+    return ui
 end
 
 return Library
