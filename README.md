@@ -16,7 +16,7 @@ if you want themes there are:
 DarkTheme
 LightTheme
 BlueTheme
-GreenTHeme
+GreenTheme
 RedTheme
 you can always create your own by modifying the sorce code
 
