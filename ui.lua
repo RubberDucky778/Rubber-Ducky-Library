@@ -132,7 +132,9 @@ function Library.CreateLib(title, theme)
         MainFrame.Visible = false
         Notification.Visible = true
         delay(5, function()
-            Notification.Visible = false
+            if Notification then
+                Notification.Visible = false
+            end
         end)
     end)
 
