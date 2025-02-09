@@ -204,6 +204,7 @@ function Library.CreateLib(title, theme)
         ScrollingFrame.Position = UDim2.new(0, 5, 0, 5)
         ScrollingFrame.ScrollBarThickness = 3
         ScrollingFrame.ScrollBarImageColor3 = Color3.fromRGB(65, 65, 70)
+        ScrollingFrame.CanvasSize = UDim2.new(0, 0, 2, 0) -- Adjust as needed
         AddCorners(ScrollingFrame, 6)
 
         table.insert(tabs, TabFrame)
@@ -354,15 +355,4 @@ function Library.CreateLib(title, theme)
             local toggled = false
             Toggle.MouseButton1Click:Connect(function()
                 toggled = not toggled
-                Toggle.BackgroundColor3 = toggled and Color3.fromRGB(0, 255, 0) or Color3.fromRGB(255, 0, 0)
-                Toggle.Text = toggled and "On" or "Off"
-                toggleData.Callback(toggled)
-            end)
-        end
-
-        function Tab:CreateTextBox(textBoxData)
-            local TextBoxFrame = Instance.new("Frame")
-            local TextBoxLabel = Instance.new("TextLabel")
-            local TextBox = Instance.new("TextBox")
-
-            TextBoxFrame.Name = textBoxData.Name ..
+                Toggle.BackgroundColor3 = toggled and Color3.fromRGB(0, 255, 0) or Color3.fromRGB(255, 0,
