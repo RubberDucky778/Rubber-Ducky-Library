@@ -200,6 +200,20 @@ function Library.CreateLib(title, theme)
             end)
         end
 
+        function Tab:CreateLabel(labelData)
+            local Label = Instance.new("TextLabel")
+
+            Label.Name = labelData.Name
+            Label.Parent = TabFrame
+            Label.BackgroundColor3 = Color3.fromRGB(55, 55, 55)
+            Label.Size = UDim2.new(0, 300, 0, 50)
+            Label.Position = UDim2.new(0, 10, 0, 10 + (#TabFrame:GetChildren() - 1) * 60)
+            Label.Font = Enum.Font.SourceSans
+            Label.Text = labelData.Text
+            Label.TextColor3 = Color3.fromRGB(255, 255, 255)
+            Label.TextSize = 18
+        end
+
         return Tab
     end
 
