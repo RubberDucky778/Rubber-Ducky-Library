@@ -4,6 +4,8 @@ function Library.CreateLib(title, theme)
     local ScreenGui = Instance.new("ScreenGui")
     local MainFrame = Instance.new("Frame")
     local TitleLabel = Instance.new("TextLabel")
+    local TabContainer = Instance.new("Frame")
+    local TabButtons = Instance.new("Frame")
     
     ScreenGui.Name = "LibraryUI"
     ScreenGui.ResetOnSpawn = false
@@ -27,21 +29,72 @@ function Library.CreateLib(title, theme)
     TitleLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
     TitleLabel.TextSize = 24
 
+    TabButtons.Name = "TabButtons"
+    TabButtons.Parent = MainFrame
+    TabButtons.BackgroundColor3 = Color3.fromRGB(25, 25, 25)
+    TabButtons.Position = UDim2.new(0, 0, 0, 50)
+    TabButtons.Size = UDim2.new(1, 0, 0, 30)
+
+    TabContainer.Name = "TabContainer"
+    TabContainer.Parent = MainFrame
+    TabContainer.BackgroundColor3 = Color3.fromRGB(35, 35, 35)
+    TabContainer.Position = UDim2.new(0, 0, 0, 80)
+    TabContainer.Size = UDim2.new(1, 0, 1, -80)
+    TabContainer.ClipsDescendants = true
+
     if theme == "DarkTheme" then
         MainFrame.BackgroundColor3 = Color3.fromRGB(45, 45, 45)
         TitleLabel.BackgroundColor3 = Color3.fromRGB(35, 35, 35)
+        TabButtons.BackgroundColor3 = Color3.fromRGB(35, 35, 35)
+        TabContainer.BackgroundColor3 = Color3.fromRGB(45, 45, 45)
     elseif theme == "LightTheme" then
         MainFrame.BackgroundColor3 = Color3.fromRGB(245, 245, 245)
         TitleLabel.BackgroundColor3 = Color3.fromRGB(225, 225, 225)
         TitleLabel.TextColor3 = Color3.fromRGB(0, 0, 0)
+        TabButtons.BackgroundColor3 = Color3.fromRGB(225, 225, 225)
+        TabContainer.BackgroundColor3 = Color3.fromRGB(245, 245, 245)
+    end
+
+    local Window = {}
+    local tabs = {}
+
+    function Window:NewTab(tabName)
+        local TabButton = Instance.new("TextButton")
+        local TabFrame = Instance.new("Frame")
+
+        TabButton.Name = tabName .. "Button"
+        TabButton.Parent = TabButtons
+        TabButton.BackgroundColor3 = Color3.fromRGB(35, 35, 35)
+        TabButton.Size = UDim2.new(0, 100, 1, 0)
+        TabButton.Font = Enum.Font.SourceSans
+        TabButton.Text = tabName
+        TabButton.TextColor3 = Color3.fromRGB(255, 255, 255)
+        TabButton.TextSize = 18
+
+        TabFrame.Name = tabName .. "Frame"
+        TabFrame.Parent = TabContainer
+        TabFrame.BackgroundColor3 = Color3.fromRGB(35, 35, 35)
+        TabFrame.Size = UDim2.new(1, 0, 1, 0)
+        TabFrame.Visible = false
+
+        table.insert(tabs, TabFrame)
+
+        TabButton.MouseButton1Click:Connect(function()
+            for _, tab in pairs(tabs) do
+                tab.Visible = false
+            end
+            TabFrame.Visible = true
+        end)
+
+        return {
+            TabButton = TabButton,
+            TabFrame = TabFrame
+        }
     end
 
     print("UI Library created with title:", title)
 
-    return {
-        ScreenGui = ScreenGui,
-        MainFrame = MainFrame
-    }
+    return Window
 end
 
 return Library
