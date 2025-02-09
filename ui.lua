@@ -24,6 +24,27 @@ function Library.CreateLib(name, theme)
     Title.TextSize = 24
     Title.Parent = MainFrame
 
+    -- Draggable functionality
+    local dragInput, dragStart, startPos
+
+    local function update(input)
+        local delta = input.Position - dragStart
+        MainFrame.Position = UDim2.new(startPos.X.Scale, startPos.X.Offset + delta.X, startPos.Y.Scale, startPos.Y.Offset + delta.Y)
+    end
+
+    Title.InputBegan:Connect(function(input)
+        if input.UserInputType == Enum.UserInputType.MouseButton1 then
+            dragStart = input.Position
+            startPos = MainFrame.Position
+            input.Changed:Connect(function()
+                if input.UserInputState == Enum.UserInputState.End then
+                    game:GetService("UserInputService").InputChanged:Disconnect(update)
+                end
+            end)
+            game:GetService("UserInputService").InputChanged:Connect(update)
+        end
+    end)
+
     -- Function to create buttons
     function ui:CreateButton(buttonText, callback)
         local Button = Instance.new("TextButton")
