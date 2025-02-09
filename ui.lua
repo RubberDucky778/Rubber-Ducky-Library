@@ -47,8 +47,8 @@ function Library.CreateLib(title, theme)
     MinimizeButton.Name = "MinimizeButton"
     MinimizeButton.Parent = MainFrame
     MinimizeButton.BackgroundColor3 = Color3.fromRGB(255, 255, 0)
-    MinimizeButton.Position = UDim2.new(1, -60, 0, 0)
-    MinimizeButton.Size = UDim2.new(0, 30, 0, 30)
+    MinimizeButton.Position = UDim2.new(1, -60, 0, 10)
+    MinimizeButton.Size = UDim2.new(0, 20, 0, 20)
     MinimizeButton.Font = Enum.Font.SourceSans
     MinimizeButton.Text = "-"
     MinimizeButton.TextColor3 = Color3.fromRGB(0, 0, 0)
@@ -57,8 +57,8 @@ function Library.CreateLib(title, theme)
     CloseButton.Name = "CloseButton"
     CloseButton.Parent = MainFrame
     CloseButton.BackgroundColor3 = Color3.fromRGB(255, 0, 0)
-    CloseButton.Position = UDim2.new(1, -30, 0, 0)
-    CloseButton.Size = UDim2.new(0, 30, 0, 30)
+    CloseButton.Position = UDim2.new(1, -30, 0, 10)
+    CloseButton.Size = UDim2.new(0, 20, 0, 20)
     CloseButton.Font = Enum.Font.SourceSans
     CloseButton.Text = "X"
     CloseButton.TextColor3 = Color3.fromRGB(0, 0, 0)
@@ -88,6 +88,7 @@ function Library.CreateLib(title, theme)
         TabButton.Parent = TabButtons
         TabButton.BackgroundColor3 = Color3.fromRGB(35, 35, 35)
         TabButton.Size = UDim2.new(0, 100, 1, 0)
+        TabButton.Position = UDim2.new(#tabs * 0.25, 0, 0, 0)
         TabButton.Font = Enum.Font.SourceSans
         TabButton.Text = tabName
         TabButton.TextColor3 = Color3.fromRGB(255, 255, 255)
@@ -97,7 +98,7 @@ function Library.CreateLib(title, theme)
         TabFrame.Parent = TabContainer
         TabFrame.BackgroundColor3 = Color3.fromRGB(35, 35, 35)
         TabFrame.Size = UDim2.new(1, 0, 1, 0)
-        TabFrame.Visible = false
+        TabFrame.Visible = #tabs == 0
 
         table.insert(tabs, TabFrame)
 
