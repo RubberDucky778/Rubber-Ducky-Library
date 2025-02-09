@@ -6,6 +6,7 @@ function Library.CreateLib(title, theme)
     local TitleLabel = Instance.new("TextLabel")
     
     ScreenGui.Name = "LibraryUI"
+    ScreenGui.ResetOnSpawn = false
     ScreenGui.Parent = game.CoreGui
 
     MainFrame.Name = "MainFrame"
@@ -34,6 +35,8 @@ function Library.CreateLib(title, theme)
         TitleLabel.BackgroundColor3 = Color3.fromRGB(225, 225, 225)
         TitleLabel.TextColor3 = Color3.fromRGB(0, 0, 0)
     end
+
+    print("UI Library created with title:", title)
 
     return {
         ScreenGui = ScreenGui,
