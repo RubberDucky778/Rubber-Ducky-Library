@@ -6,6 +6,8 @@ function Library.CreateLib(title, theme)
     local TitleLabel = Instance.new("TextLabel")
     local TabContainer = Instance.new("Frame")
     local TabButtons = Instance.new("Frame")
+    local MinimizeButton = Instance.new("TextButton")
+    local CloseButton = Instance.new("TextButton")
     
     ScreenGui.Name = "LibraryUI"
     ScreenGui.ResetOnSpawn = false
@@ -41,6 +43,26 @@ function Library.CreateLib(title, theme)
     TabContainer.Position = UDim2.new(0, 0, 0, 80)
     TabContainer.Size = UDim2.new(1, 0, 1, -80)
     TabContainer.ClipsDescendants = true
+
+    MinimizeButton.Name = "MinimizeButton"
+    MinimizeButton.Parent = MainFrame
+    MinimizeButton.BackgroundColor3 = Color3.fromRGB(255, 255, 0)
+    MinimizeButton.Position = UDim2.new(1, -60, 0, 0)
+    MinimizeButton.Size = UDim2.new(0, 30, 0, 30)
+    MinimizeButton.Font = Enum.Font.SourceSans
+    MinimizeButton.Text = "-"
+    MinimizeButton.TextColor3 = Color3.fromRGB(0, 0, 0)
+    MinimizeButton.TextSize = 24
+
+    CloseButton.Name = "CloseButton"
+    CloseButton.Parent = MainFrame
+    CloseButton.BackgroundColor3 = Color3.fromRGB(255, 0, 0)
+    CloseButton.Position = UDim2.new(1, -30, 0, 0)
+    CloseButton.Size = UDim2.new(0, 30, 0, 30)
+    CloseButton.Font = Enum.Font.SourceSans
+    CloseButton.Text = "X"
+    CloseButton.TextColor3 = Color3.fromRGB(0, 0, 0)
+    CloseButton.TextSize = 24
 
     if theme == "DarkTheme" then
         MainFrame.BackgroundColor3 = Color3.fromRGB(45, 45, 45)
@@ -91,6 +113,14 @@ function Library.CreateLib(title, theme)
             TabFrame = TabFrame
         }
     end
+
+    MinimizeButton.MouseButton1Click:Connect(function()
+        MainFrame.Visible = not MainFrame.Visible
+    end)
+
+    CloseButton.MouseButton1Click:Connect(function()
+        ScreenGui:Destroy()
+    end)
 
     print("UI Library created with title:", title)
 
