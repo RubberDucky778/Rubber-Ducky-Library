@@ -122,10 +122,24 @@ function Library.CreateLib(title, theme)
             TabFrame.Visible = true
         end)
 
-        return {
-            TabButton = TabButton,
-            TabFrame = TabFrame
-        }
+        local Tab = {}
+        function Tab:CreateButton(buttonData)
+            local Button = Instance.new("TextButton")
+
+            Button.Name = buttonData.Name
+            Button.Parent = TabFrame
+            Button.BackgroundColor3 = Color3.fromRGB(55, 55, 55)
+            Button.Size = UDim2.new(0, 200, 0, 50)
+            Button.Position = UDim2.new(0, 10, 0, 10 + (#TabFrame:GetChildren() - 1) * 60)
+            Button.Font = Enum.Font.SourceSans
+            Button.Text = buttonData.Name
+            Button.TextColor3 = Color3.fromRGB(255, 255, 255)
+            Button.TextSize = 18
+
+            Button.MouseButton1Click:Connect(buttonData.Callback)
+        end
+
+        return Tab
     end
 
     MinimizeButton.MouseButton1Click:Connect(function()
