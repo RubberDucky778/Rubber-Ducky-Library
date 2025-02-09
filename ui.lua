@@ -1,94 +1,167 @@
--- ui.lua
-
 local Library = {}
+local TweenService = game:GetService("TweenService")
+local UserInputService = game:GetService("UserInputService")
 
--- Create the main library function
-function Library.CreateLib(name, theme)
-    local ui = Instance.new("ScreenGui")
-    ui.Name = name
-    ui.Parent = game.Players.LocalPlayer:WaitForChild("PlayerGui")
-
-    -- Create a frame to hold the UI elements
+function Library.CreateLib(title, theme)
+    -- Theme colors
+    local themes = {
+        DefaultTheme = {
+            MainColor = Color3.fromRGB(35, 35, 35),
+            SecondaryColor = Color3.fromRGB(45, 45, 45),
+            AccentColor = Color3.fromRGB(0, 170, 255),
+            TextColor = Color3.fromRGB(255, 255, 255)
+        }
+    }
+    
+    local selectedTheme = themes[theme] or themes.DefaultTheme
+    
+    -- Create main GUI elements
+    local ScreenGui = Instance.new("ScreenGui")
+    ScreenGui.Name = "CustomUI"
+    ScreenGui.Parent = game.CoreGui
+    
     local MainFrame = Instance.new("Frame")
-    MainFrame.Size = UDim2.new(0, 400, 0, 300)
-    MainFrame.Position = UDim2.new(0.5, -200, 0.5, -150)
-    MainFrame.BackgroundColor3 = theme == "DefaultTheme" and Color3.fromRGB(30, 30, 30) or Color3.fromRGB(255, 255, 255)
-    MainFrame.Parent = ui
-
-    -- Create a title
-    local Title = Instance.new("TextLabel")
-    Title.Size = UDim2.new(0, 400, 0, 50)
-    Title.Text = name
-    Title.BackgroundTransparency = 1
-    Title.TextColor3 = Color3.fromRGB(255, 165, 0)  -- Orange color for title
-    Title.TextSize = 24
-    Title.Parent = MainFrame
-
-    -- Draggable functionality
-    local dragInput, dragStart, startPos
-
-    local function update(input)
-        local delta = input.Position - dragStart
-        MainFrame.Position = UDim2.new(startPos.X.Scale, startPos.X.Offset + delta.X, startPos.Y.Scale, startPos.Y.Offset + delta.Y)
-    end
-
-    Title.InputBegan:Connect(function(input)
+    MainFrame.Name = "MainFrame"
+    MainFrame.Size = UDim2.new(0, 500, 0, 300)
+    MainFrame.Position = UDim2.new(0.5, -250, 0.5, -150)
+    MainFrame.BackgroundColor3 = selectedTheme.MainColor
+    MainFrame.BorderSizePixel = 0
+    MainFrame.Parent = ScreenGui
+    
+    -- Add corner radius
+    local UICorner = Instance.new("UICorner")
+    UICorner.CornerRadius = UDim.new(0, 6)
+    UICorner.Parent = MainFrame
+    
+    -- Create title bar
+    local TitleBar = Instance.new("Frame")
+    TitleBar.Name = "TitleBar"
+    TitleBar.Size = UDim2.new(1, 0, 0, 30)
+    TitleBar.BackgroundColor3 = selectedTheme.SecondaryColor
+    TitleBar.BorderSizePixel = 0
+    TitleBar.Parent = MainFrame
+    
+    local TitleCorner = Instance.new("UICorner")
+    TitleCorner.CornerRadius = UDim.new(0, 6)
+    TitleCorner.Parent = TitleBar
+    
+    local TitleLabel = Instance.new("TextLabel")
+    TitleLabel.Name = "Title"
+    TitleLabel.Text = title
+    TitleLabel.Size = UDim2.new(1, -30, 1, 0)
+    TitleLabel.Position = UDim2.new(0, 10, 0, 0)
+    TitleLabel.BackgroundTransparency = 1
+    TitleLabel.TextColor3 = selectedTheme.TextColor
+    TitleLabel.TextSize = 16
+    TitleLabel.Font = Enum.Font.GothamBold
+    TitleLabel.TextXAlignment = Enum.TextXAlignment.Left
+    TitleLabel.Parent = TitleBar
+    
+    -- Create close button
+    local CloseButton = Instance.new("TextButton")
+    CloseButton.Name = "CloseButton"
+    CloseButton.Size = UDim2.new(0, 20, 0, 20)
+    CloseButton.Position = UDim2.new(1, -25, 0, 5)
+    CloseButton.BackgroundColor3 = Color3.fromRGB(255, 70, 70)
+    CloseButton.Text = ""
+    CloseButton.Parent = TitleBar
+    
+    local CloseCorner = Instance.new("UICorner")
+    CloseCorner.CornerRadius = UDim.new(0, 10)
+    CloseCorner.Parent = CloseButton
+    
+    -- Create container for tabs
+    local TabContainer = Instance.new("Frame")
+    TabContainer.Name = "TabContainer"
+    TabContainer.Size = UDim2.new(1, 0, 1, -30)
+    TabContainer.Position = UDim2.new(0, 0, 0, 30)
+    TabContainer.BackgroundTransparency = 1
+    TabContainer.Parent = MainFrame
+    
+    -- Make the window draggable
+    local dragging = false
+    local dragStart = nil
+    local startPos = nil
+    
+    TitleBar.InputBegan:Connect(function(input)
         if input.UserInputType == Enum.UserInputType.MouseButton1 then
+            dragging = true
             dragStart = input.Position
             startPos = MainFrame.Position
-            input.Changed:Connect(function()
-                if input.UserInputState == Enum.UserInputState.End then
-                    game:GetService("UserInputService").InputChanged:Disconnect(update)
-                end
-            end)
-            game:GetService("UserInputService").InputChanged:Connect(update)
         end
     end)
-
-    -- Function to create buttons
-    function ui:CreateButton(buttonText, callback)
-        local Button = Instance.new("TextButton")
-        Button.Size = UDim2.new(0, 200, 0, 50)
-        Button.Position = UDim2.new(0, 100, 0, 80)
-        Button.Text = buttonText
-        Button.BackgroundColor3 = Color3.fromRGB(255, 165, 0) -- Orange button color
-        Button.TextColor3 = Color3.fromRGB(0, 0, 0)
-        Button.TextSize = 18
-        Button.Parent = MainFrame
+    
+    UserInputService.InputChanged:Connect(function(input)
+        if dragging and input.UserInputType == Enum.UserInputType.MouseMovement then
+            local delta = input.Position - dragStart
+            MainFrame.Position = UDim2.new(
+                startPos.X.Scale,
+                startPos.X.Offset + delta.X,
+                startPos.Y.Scale,
+                startPos.Y.Offset + delta.Y
+            )
+        end
+    end)
+    
+    UserInputService.InputEnded:Connect(function(input)
+        if input.UserInputType == Enum.UserInputType.MouseButton1 then
+            dragging = false
+        end
+    end)
+    
+    -- Close button functionality
+    CloseButton.MouseButton1Click:Connect(function()
+        ScreenGui:Destroy()
+    end)
+    
+    -- Window object with methods for adding tabs and elements
+    local Window = {}
+    
+    function Window:CreateTab(name)
+        local Tab = {}
         
-        Button.MouseButton1Click:Connect(callback)
+        local TabButton = Instance.new("TextButton")
+        TabButton.Name = name
+        TabButton.Size = UDim2.new(0, 100, 0, 25)
+        TabButton.BackgroundColor3 = selectedTheme.SecondaryColor
+        TabButton.Text = name
+        TabButton.TextColor3 = selectedTheme.TextColor
+        TabButton.Font = Enum.Font.Gotham
+        TabButton.TextSize = 14
+        TabButton.Parent = TabContainer
+        
+        local TabContent = Instance.new("ScrollingFrame")
+        TabContent.Name = name.."Content"
+        TabContent.Size = UDim2.new(1, -110, 1, 0)
+        TabContent.Position = UDim2.new(0, 105, 0, 0)
+        TabContent.BackgroundTransparency = 1
+        TabContent.ScrollBarThickness = 4
+        TabContent.Visible = false
+        TabContent.Parent = TabContainer
+        
+        function Tab:AddButton(buttonText, callback)
+            local Button = Instance.new("TextButton")
+            Button.Name = buttonText
+            Button.Size = UDim2.new(1, -20, 0, 30)
+            Button.Position = UDim2.new(0, 10, 0, #TabContent:GetChildren() * 35)
+            Button.BackgroundColor3 = selectedTheme.SecondaryColor
+            Button.Text = buttonText
+            Button.TextColor3 = selectedTheme.TextColor
+            Button.Font = Enum.Font.Gotham
+            Button.TextSize = 14
+            Button.Parent = TabContent
+            
+            local ButtonCorner = Instance.new("UICorner")
+            ButtonCorner.CornerRadius = UDim.new(0, 4)
+            ButtonCorner.Parent = Button
+            
+            Button.MouseButton1Click:Connect(callback)
+        end
+        
+        return Tab
     end
-
-    -- Function to create sliders
-    function ui:CreateSlider(sliderText, min, max, defaultValue, callback)
-        local SliderFrame = Instance.new("Frame")
-        SliderFrame.Size = UDim2.new(0, 350, 0, 50)
-        SliderFrame.Position = UDim2.new(0, 25, 0, 120)
-        SliderFrame.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
-        SliderFrame.Parent = MainFrame
-
-        local SliderLabel = Instance.new("TextLabel")
-        SliderLabel.Size = UDim2.new(0, 350, 0, 20)
-        SliderLabel.Text = sliderText
-        SliderLabel.BackgroundTransparency = 1
-        SliderLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
-        SliderLabel.TextSize = 14
-        SliderLabel.Parent = SliderFrame
-
-        local Slider = Instance.new("Slider")
-        Slider.Size = UDim2.new(0, 350, 0, 5)
-        Slider.Position = UDim2.new(0, 0, 0, 25)
-        Slider.MinValue = min
-        Slider.MaxValue = max
-        Slider.Value = defaultValue
-        Slider.Parent = SliderFrame
-
-        Slider.Changed:Connect(function(newValue)
-            callback(newValue)
-        end)
-    end
-
-    return ui
+    
+    return Window
 end
 
 return Library
