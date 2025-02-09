@@ -214,6 +214,42 @@ function Library.CreateLib(title, theme)
             Label.TextSize = 18
         end
 
+        function Tab:CreateToggle(toggleData)
+            local ToggleFrame = Instance.new("Frame")
+            local ToggleLabel = Instance.new("TextLabel")
+            local Toggle = Instance.new("TextButton")
+
+            ToggleFrame.Name = toggleData.Name .. "Frame"
+            ToggleFrame.Parent = TabFrame
+            ToggleFrame.BackgroundColor3 = Color3.fromRGB(55, 55, 55)
+            ToggleFrame.Size = UDim2.new(0, 200, 0, 50)
+            ToggleFrame.Position = UDim2.new(0, 10, 0, 10 + (#TabFrame:GetChildren() - 1) * 60)
+
+            ToggleLabel.Name = toggleData.Name .. "Label"
+            ToggleLabel.Parent = ToggleFrame
+            ToggleLabel.BackgroundColor3 = Color3.fromRGB(55, 55, 55)
+            ToggleLabel.Size = UDim2.new(0.8, 0, 1, 0)
+            ToggleLabel.Font = Enum.Font.SourceSans
+            ToggleLabel.Text = toggleData.Name
+            ToggleLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
+            ToggleLabel.TextSize = 18
+
+            Toggle.Name = toggleData.Name
+            Toggle.Parent = ToggleFrame
+            Toggle.BackgroundColor3 = Color3.fromRGB(255, 0, 0)
+            Toggle.Size = UDim2.new(0.2, 0, 1, 0)
+            Toggle.Position = UDim2.new(0.8, 0, 0, 0)
+            Toggle.Text = "Off"
+
+            local toggled = false
+            Toggle.MouseButton1Click:Connect(function()
+                toggled = not toggled
+                Toggle.BackgroundColor3 = toggled and Color3.fromRGB(0, 255, 0) or Color3.fromRGB(255, 0, 0)
+                Toggle.Text = toggled and "On" or "Off"
+                toggleData.Callback(toggled)
+            end)
+        end
+
         return Tab
     end
 
